@@ -10,6 +10,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.firefox.options import Options
+
 
 class Attendance():
 
@@ -35,7 +37,9 @@ class Attendance():
 
 
     def mark_attendance(self, lesson):
-        self.driver = webdriver.Firefox()
+        options = Options()
+        options.headless = True
+        self.driver = webdriver.Firefox(options=options)
         self.driver.get('https://lum-prod.ec.royalholloway.ac.uk/')
         self.wait_for_element('userNameInput')
 
