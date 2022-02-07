@@ -7,6 +7,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.firefox.options import Options
+
 
 class Timetable():
 
@@ -14,7 +16,9 @@ class Timetable():
 
 
     def __init__(self) -> None:
-        self.driver = webdriver.Firefox(executable_path='/usr/bin/geckodriver')
+        options = Options()
+        options.headless = True
+        self.driver = webdriver.Firefox(options=options)
         self.get_timetable()
 
     def wait_for_element(self, id):
