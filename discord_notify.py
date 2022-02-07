@@ -11,6 +11,5 @@ def monitor_attendance(lesson):
 
     webhook.add_embed(embed)
 
-    response = webhook.execute()
+    webhook.execute()
 
-monitor_attendance("tst")
