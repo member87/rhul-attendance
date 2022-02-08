@@ -17,6 +17,10 @@ from selenium.webdriver.firefox.options import Options
 class Attendance():
 
     def __init__(self) -> None:
+
+        with open('logs', 'w') as f:
+            f.write('openend')
+
         with open('current_week.json', 'r') as f:
             self.timetable = json.load(f)
 
