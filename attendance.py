@@ -75,11 +75,13 @@ class Attendance():
             try:
                 time.sleep(10)
                 self.log(lesson[1])
-                self.log(self.driver.find_element(By.ID, 'pbid-buttonFoundHappeningNowButtonsHere'))
                 self.driver.find_element(By.ID, 'pbid-buttonFoundHappeningNowButtonsHere').click()
+                self.log('pressed here')
                 dn.monitor_attendance(lesson[1])
 
-            except:
+            except Exception as e:
+                self.log("ERROR **************************************")
+                self.log(e)
                 dn.error('error attending class :' + lesson[1])
         except Exception as e:
             self.log(e)
