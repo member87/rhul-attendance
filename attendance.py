@@ -17,9 +17,8 @@ from selenium.webdriver.firefox.options import Options
 class Attendance():
 
     def __init__(self) -> None:
-
-        with open('logs', 'w') as f:
-            f.write('openend')
+        
+        self.log('started')
 
         with open('current_week.json', 'r') as f:
             self.timetable = json.load(f)
@@ -34,10 +33,18 @@ class Attendance():
         self.time_passed = seconds
         lesson = self.is_in_class()
         if lesson:
+            self.log('lesson found -> starting attendance')
             self.mark_attendance(lesson)
+        else:
+            self.log('no lesson found')
+
+    def log(self, message):
+        with open('logs', 'a') as f:
+            f.write(message + "\n")
 
     
     def wait_for_element(self, id):
+        self.log('waiting for element ' + id)
         WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, id)))
 
 
