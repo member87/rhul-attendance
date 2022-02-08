@@ -49,37 +49,40 @@ class Attendance():
 
 
     def mark_attendance(self, lesson):
-        options = Options()
-        self.log("started marking")
-        options.headless = True
-        self.driver = webdriver.Firefox(options=options, executable_path='/usr/bin/geckodriver')
-
-        self.log("loaded first page")
-        self.driver.get('https://lum-prod.ec.royalholloway.ac.uk/')
-        self.wait_for_element('userNameInput')
-
-        self.log("entering details")
-        # Login
-        self.driver.find_element(By.ID, 'userNameInput').send_keys(CONFIG.username + '@live.rhul.ac.uk')
-        self.driver.find_element(By.ID, 'passwordInput').send_keys(CONFIG.password)
-        self.driver.find_element(By.ID, 'submitButton').click()
-
-        self.log("pressed login")
-
-        # Load Attendance page
-        self.driver.get('https://generalssb-prod.ec.royalholloway.ac.uk/BannerExtensibility/customPage/page/RHUL_Attendance_Student')
-
-        self.log("loading attendance page")
-        # wait for load
         try:
-            time.sleep(10)
-            self.log(lesson[1])
-            self.log(self.driver.find_element(By.ID, 'pbid-buttonFoundHappeningNowButtonsHere'))
-            self.driver.find_element(By.ID, 'pbid-buttonFoundHappeningNowButtonsHere').click()
-            dn.monitor_attendance(lesson[1])
+            options = Options()
+            self.log("started marking")
+            options.headless = True
+            self.driver = webdriver.Firefox(options=options, executable_path='/usr/bin/geckodriver')
 
-        except:
-            dn.error('error attending class :' + lesson[1])
+            self.log("loaded first page")
+            self.driver.get('https://lum-prod.ec.royalholloway.ac.uk/')
+            self.wait_for_element('userNameInput')
+
+            self.log("entering details")
+            # Login
+            self.driver.find_element(By.ID, 'userNameInput').send_keys(CONFIG.username + '@live.rhul.ac.uk')
+            self.driver.find_element(By.ID, 'passwordInput').send_keys(CONFIG.password)
+            self.driver.find_element(By.ID, 'submitButton').click()
+
+            self.log("pressed login")
+
+            # Load Attendance page
+            self.driver.get('https://generalssb-prod.ec.royalholloway.ac.uk/BannerExtensibility/customPage/page/RHUL_Attendance_Student')
+
+            self.log("loading attendance page")
+            # wait for load
+            try:
+                time.sleep(10)
+                self.log(lesson[1])
+                self.log(self.driver.find_element(By.ID, 'pbid-buttonFoundHappeningNowButtonsHere'))
+                self.driver.find_element(By.ID, 'pbid-buttonFoundHappeningNowButtonsHere').click()
+                dn.monitor_attendance(lesson[1])
+
+            except:
+                dn.error('error attending class :' + lesson[1])
+        except Exception as e:
+            self.log(e)
 
     
     def is_in_class(self) -> object:
