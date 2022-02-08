@@ -50,31 +50,31 @@ class Attendance():
 
     def mark_attendance(self, lesson):
         options = Options()
-        print("started marking")
+        self.log("started marking")
         options.headless = True
         self.driver = webdriver.Firefox(options=options, executable_path='/usr/bin/geckodriver')
 
-        print("loaded first page")
+        self.log("loaded first page")
         self.driver.get('https://lum-prod.ec.royalholloway.ac.uk/')
         self.wait_for_element('userNameInput')
 
-        print("entering details")
+        self.log("entering details")
         # Login
         self.driver.find_element(By.ID, 'userNameInput').send_keys(CONFIG.username + '@live.rhul.ac.uk')
         self.driver.find_element(By.ID, 'passwordInput').send_keys(CONFIG.password)
         self.driver.find_element(By.ID, 'submitButton').click()
 
-        print("pressed login")
+        self.log("pressed login")
 
         # Load Attendance page
         self.driver.get('https://generalssb-prod.ec.royalholloway.ac.uk/BannerExtensibility/customPage/page/RHUL_Attendance_Student')
 
-        print("loading attendance page")
+        self.log("loading attendance page")
         # wait for load
         try:
             time.sleep(10)
-            print(lesson[1])
-            print(self.driver.find_element(By.ID, 'pbid-buttonFoundHappeningNowButtonsHere'))
+            self.log(lesson[1])
+            self.log(self.driver.find_element(By.ID, 'pbid-buttonFoundHappeningNowButtonsHere'))
             self.driver.find_element(By.ID, 'pbid-buttonFoundHappeningNowButtonsHere').click()
             dn.monitor_attendance(lesson[1])
 
