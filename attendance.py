@@ -3,6 +3,7 @@
 import json
 import CONFIG
 import discord_notify as dn
+import time
 
 from datetime import date, datetime, timedelta
 from selenium import webdriver
@@ -39,7 +40,7 @@ class Attendance():
     def mark_attendance(self, lesson):
         options = Options()
         options.headless = True
-        self.driver = webdriver.Firefox(options=options)
+        self.driver = webdriver.Firefox(options=options, executable_path='/usr/bin/geckodriver')
         self.driver.get('https://lum-prod.ec.royalholloway.ac.uk/')
         self.wait_for_element('userNameInput')
 
@@ -53,7 +54,7 @@ class Attendance():
 
         # wait for load
         try:
-            self.wait_for_element('pbid-buttonFoundHappeningNowButtonsHere')
+            time.sleep(10)
             self.driver.find_element(By.ID, 'pbid-buttonFoundHappeningNowButtonsHere').click()
             dn.monitor_attendance(lesson[1])
 

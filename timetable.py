@@ -18,7 +18,7 @@ class Timetable():
     def __init__(self) -> None:
         options = Options()
         options.headless = True
-        self.driver = webdriver.Firefox(options=options)
+        self.driver = webdriver.Firefox(options=options, executable_path='/usr/bin/geckodriver')
         self.get_timetable()
 
     def wait_for_element(self, id):
