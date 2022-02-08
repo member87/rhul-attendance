@@ -19,7 +19,7 @@ class Attendance():
         with open('current_week.json', 'r') as f:
             self.timetable = json.load(f)
 
-        self.current_day = self.timetable[datetime.today().weekday()+1]
+        self.current_day = self.timetable[datetime.today().weekday()]
 
 
         now = datetime.now()
@@ -52,9 +52,13 @@ class Attendance():
         self.driver.get('https://generalssb-prod.ec.royalholloway.ac.uk/BannerExtensibility/customPage/page/RHUL_Attendance_Student')
 
         # wait for load
-        self.wait_for_element('content')
+        try:
+            self.wait_for_element('pbid-buttonFoundHappeningNowButtonsHere')
+            self.driver.find_element(By.ID, 'pbid-buttonFoundHappeningNowButtonsHere').click()
+            dn.monitor_attendance(lesson[1])
 
-        dn.monitor_attendance(lesson[1])
+        except:
+            dn.error('error attending class :' + lesson[1])
 
     
     def is_in_class(self) -> object:
