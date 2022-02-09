@@ -18,7 +18,7 @@ class Attendance():
 
     def __init__(self) -> None:
         
-        self.log('started')
+        self.log('running attendance file')
 
         with open('current_week.json', 'r') as f:
             self.timetable = json.load(f)
@@ -40,7 +40,7 @@ class Attendance():
 
     def log(self, message):
         with open('logs', 'a') as f:
-            f.write(f"[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {message}\n")
+            f.write(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {message}\n")
 
     
     def wait_for_element(self, id):
