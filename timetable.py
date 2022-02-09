@@ -2,6 +2,7 @@
 
 import CONFIG
 import json
+from logs import Log
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
@@ -16,6 +17,7 @@ class Timetable():
 
 
     def __init__(self) -> None:
+        Log.log("starting timetable updater")
         options = Options()
         options.headless = True
         self.driver = webdriver.Firefox(options=options, executable_path='/usr/bin/geckodriver')
@@ -25,6 +27,7 @@ class Timetable():
         WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, id)))
 
     def get_timetable(self) -> None:
+        Log.log("opening login page")
         self.driver.get(CONFIG.url)
 
 
@@ -32,6 +35,7 @@ class Timetable():
         self.wait_for_element('tUserName')
        
         # Login
+        Log.log("entering login details")
         self.driver.find_element(By.ID, 'tUserName').send_keys(CONFIG.username)
         self.driver.find_element(By.ID, 'tPassword').send_keys(CONFIG.password)
         self.driver.find_element(By.ID, 'bLogin').click()
@@ -46,10 +50,12 @@ class Timetable():
         self.wait_for_element('lbWeeks')
 
         # Select current week
+        Log.log("selecting current week")
         week_list = Select(self.driver.find_element(By.ID, 'lbWeeks'))
         week_list.select_by_index(3)
 
         # Load timetable page
+        Log.log("loading timetable page")
         self.driver.find_element(By.ID, 'bGetTimetable').click()
 
         # Wait for page to load
@@ -60,6 +66,7 @@ class Timetable():
         self.save_timetable(table)
 
     def save_timetable(self, table) -> None:
+        Log.log("running save timetable")
         for i, tr in enumerate(table.find_elements(By.XPATH, './*')[1:]):
             offset = 0
             self.timetable.append([])
@@ -72,6 +79,7 @@ class Timetable():
                     offset = offset + 30
 
         with open('current_week.json', 'w') as f:
+            Log.log("saving timetable")
             json.dump(self.timetable, f)
 
 
