@@ -70,8 +70,13 @@ class Attendance():
             try:
                 time.sleep(20)
                 Log.log(lesson[1])
-                self.driver.find_element(By.ID, 'pbid-buttonFoundHappeningNowButtonsHere').click()
-                Log.log('pressed "Im here" button')
+                if self.driver.find_element(By.ID, 'pbid-buttonFoundHappeningNowButtonsHere'):
+                    self.driver.find_element(By.ID, 'pbid-buttonFoundHappeningNowButtonsHere').click()
+                    Log.log('pressed "Im here" button')
+                else:
+                    self.driver.find_element(By.ID, 'pbid-buttonFoundHappeningNowButtonsTwoInPerson').click()
+                    Log.log('pressed in person')
+
                 dn.monitor_attendance(lesson[1])
                 self.driver.quit()
 
