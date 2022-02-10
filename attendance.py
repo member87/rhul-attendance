@@ -73,8 +73,10 @@ class Attendance():
                 self.driver.find_element(By.ID, 'pbid-buttonFoundHappeningNowButtonsHere').click()
                 Log.log('pressed "Im here" button')
                 dn.monitor_attendance(lesson[1])
+                self.driver.quit()
 
             except Exception as e:
+                self.driver.quit()
                 Log.log("ERROR **************************************")
                 Log.log(e)
                 Log.log("********************************************")
