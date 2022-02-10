@@ -47,7 +47,7 @@ class Attendance():
         try:
             options = Options()
             Log.log("creating web driver")
-            options.headless = True
+            options.headless = False
             self.driver = webdriver.Firefox(options=options, executable_path='/usr/bin/geckodriver')
 
             Log.log("loding login page")
@@ -72,10 +72,11 @@ class Attendance():
                 Log.log(lesson[1])
 
                 if "online" in lesson[1].lower():
-                    pass
+                    self.driver.find_element(By.XPATH, '//*[@id="pbid-buttonFoundHappeningNowButtonsHere"]').click()
+                    Log.log('signed in (Im Here)')
 
                 else:
-                    self.driver.execute_script('buttonFoundHappeningNowButtonsTwoInPerson_onClick()')
+                    self.driver.find_element(By.XPATH, '//*[@id="pbid-buttonFoundHappeningNowButtonsTwoInPerson"]').click()
                     Log.log('signed in (In Person)')
 
 
