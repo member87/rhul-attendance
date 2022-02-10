@@ -40,7 +40,7 @@ class Attendance():
 
     def wait_for_element(self, id):
         Log.log(f"waiting for element '{id}'")
-        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, id)))
+        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, id)))
 
 
     def mark_attendance(self, lesson):
@@ -68,7 +68,7 @@ class Attendance():
             Log.log("loaded attendance page")
             # wait for load
             try:
-                time.sleep(10)
+                time.sleep(20)
                 Log.log(lesson[1])
                 self.driver.find_element(By.ID, 'pbid-buttonFoundHappeningNowButtonsHere').click()
                 Log.log('pressed "Im here" button')
@@ -78,7 +78,7 @@ class Attendance():
                 Log.log("ERROR **************************************")
                 Log.log(e)
                 Log.log("********************************************")
-                dn.error('error attending class :' + lesson[1])
+                dn.error(e)
         except Exception as e:
             Log.log(e)
 
