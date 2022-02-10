@@ -47,7 +47,7 @@ class Attendance():
         try:
             options = Options()
             Log.log("creating web driver")
-            options.headless = False
+            options.headless = True
             self.driver = webdriver.Firefox(options=options, executable_path='/usr/bin/geckodriver')
 
             Log.log("loding login page")
