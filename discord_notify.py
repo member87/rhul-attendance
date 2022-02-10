@@ -15,9 +15,9 @@ def monitor_attendance(lesson):
 def error(error):
 
     webhook = DiscordWebhook(url='https://discord.com/api/webhooks/940240657413468230/eLhWgAvnVu0mOdwmp79XFumlChQT8HrrADQtU8InnXR9WveXtvulKdtyYm-MUCnrI8GJ')
-    embed = DiscordEmbed(title='Error', color='ff0000')
-    embed.add_embed_field(name='', value=error)
+    embed = DiscordEmbed(title='An error occured', color='ff0000')
+    embed.add_embed_field(name='Error', value=error)
     webhook.add_embed(embed)
 
     webhook.execute()
- 
+

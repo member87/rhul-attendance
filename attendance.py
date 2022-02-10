@@ -68,6 +68,7 @@ class Attendance():
             Log.log("loaded attendance page")
             # wait for load
             try:
+                test = 100 / 0
                 time.sleep(20)
                 Log.log(lesson[1])
 
@@ -88,7 +89,7 @@ class Attendance():
                 Log.log("ERROR **************************************")
                 Log.log(e)
                 Log.log("********************************************")
-                dn.error(e)
+                dn.error(str(e))
         except Exception as e:
             Log.log(e)
 
