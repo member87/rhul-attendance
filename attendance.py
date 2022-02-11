@@ -68,7 +68,6 @@ class Attendance():
             Log.log("loaded attendance page")
             # wait for load
             try:
-                test = 100 / 0
                 time.sleep(20)
                 Log.log(lesson[1])
 
