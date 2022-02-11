@@ -68,7 +68,7 @@ class Attendance():
             Log.log("loaded attendance page")
             # wait for load
             try:
-                time.sleep(20)
+                time.sleep(60)
                 Log.log(lesson[1])
 
                 if "online" in lesson[1].lower():
