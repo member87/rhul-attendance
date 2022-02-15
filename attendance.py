@@ -4,6 +4,7 @@ import json
 import CONFIG
 import discord_notify as dn
 import time
+from webdriver import init_webdriver
 from logs import Log
 
 from datetime import datetime
@@ -12,7 +13,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class Attendance():
@@ -46,10 +46,8 @@ class Attendance():
 
     def mark_attendance(self, lesson):
         try:
-            options = Options()
             Log.log("creating web driver")
-            options.headless = True
-            self.driver = webdriver.Firefox(options=options, executable_path='/usr/bin/geckodriver')
+            self.driver = init_webdriver()
 
             Log.log("loding login page")
             self.driver.get('https://lum-prod.ec.royalholloway.ac.uk/')

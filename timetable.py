@@ -2,6 +2,7 @@
 
 import CONFIG
 import json
+from findriver import init_webdriver
 from logs import Log
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -19,10 +20,7 @@ class Timetable():
 
     def __init__(self) -> None:
         Log.log("starting timetable updater")
-        options = Options()
-        options.headless = True
-        options.add_argument('--no-sandbox')
-        self.driver = webdriver.Firefox(options=options, executable_path='/usr/bin/geckodriver')
+        self.driver = init_webdriver()
         self.get_timetable()
 
     def wait_for_element(self, id):
@@ -31,6 +29,7 @@ class Timetable():
     def get_timetable(self) -> None:
         Log.log("opening login page")
         self.driver.get(CONFIG.url)
+        Log.log(CONFIG.url)
 
 
         # Wait for login page
