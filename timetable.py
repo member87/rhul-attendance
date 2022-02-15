@@ -9,6 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class Timetable():
@@ -20,6 +21,7 @@ class Timetable():
         Log.log("starting timetable updater")
         options = Options()
         options.headless = True
+        options.add_argument('--no-sandbox')
         self.driver = webdriver.Firefox(options=options, executable_path='/usr/bin/geckodriver')
         self.get_timetable()
 
@@ -64,6 +66,7 @@ class Timetable():
         # Get all timetable information
         table = self.driver.find_element(By.XPATH, '/html/body/table[2]/tbody')
         self.save_timetable(table)
+        self.driver.quit()
 
     def save_timetable(self, table) -> None:
         Log.log("running save timetable")

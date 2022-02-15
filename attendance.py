@@ -12,6 +12,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class Attendance():
@@ -91,6 +92,7 @@ class Attendance():
                 dn.error(str(e))
         except Exception as e:
             Log.log(e)
+            self.driver.quit()
 
     
     def is_in_class(self) -> object:
