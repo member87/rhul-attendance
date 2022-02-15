@@ -4,7 +4,7 @@ import json
 import CONFIG
 import discord_notify as dn
 import time
-from webdriver import init_webdriver
+from findriver import init_webdriver
 from logs import Log
 
 from datetime import datetime
