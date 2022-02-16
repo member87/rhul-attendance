@@ -36,6 +36,7 @@ def init_webdriver():
         options.binary_location = CHROMEPATH
         options.add_argument("--headless")
         return webdriver.Chrome(chrome_options=options, service_args=['--verbose'], service_log_path="chromedriver.log")
+    raise Exception("Could not find webdriver path")
 
 
 def send_notification(lesson):
