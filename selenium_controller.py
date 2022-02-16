@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import utils
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait

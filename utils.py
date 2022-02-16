@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import time
 import logging
 from discord_webhook import DiscordWebhook, DiscordEmbed
