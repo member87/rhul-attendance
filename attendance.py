@@ -1,103 +1,75 @@
 #!/usr/bin/python
 
-import json
-import CONFIG
-import discord_notify as dn
-import time
-from findriver import init_webdriver
-from logs import Log
-
+import json, CONFIG, time, logging, utils
+from selenium_controller import SeleniumController
 from datetime import datetime
-from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.firefox.options import Options
 
 
-class Attendance():
+class Attendance(SeleniumController):
 
     def __init__(self) -> None:
-        
-        Log.log('running attendance file')
+        SeleniumController.__init__(self)
+        logging.info('running attendance file')
 
         with open('current_week.json', 'r') as f:
             self.timetable = json.load(f)
 
-        self.current_day = self.timetable[datetime.today().weekday()]
+    def start(self) -> None:
+        lesson = self.is_in_class()
+        if lesson:
+            logging.info('Lesson found! Starting to mark attendance')
+            self.mark_attendance(lesson)
+        else:
+            logging.info('No lesson has been found!')
 
-
+    def time_since_8(self) -> float:
         now = datetime.now()
         day_start = now.replace(hour=8, minute=0, second=0, microsecond=0)
         seconds = (now - day_start).seconds / 60
+        return seconds
 
-        self.time_passed = seconds
-        lesson = self.is_in_class()
-        if lesson:
-            Log.log('Lesson found! Starting to mark attendance')
-            self.mark_attendance(lesson)
+
+    def mark_attendance(self, lesson) -> None:
+        logging.info("creating web driver")
+        self.driver = utils.init_webdriver()
+
+        logging.info("loding login page")
+        self.load_page('https://lum-prod.ec.royalholloway.ac.uk/')
+        self.wait_for_element('userNameInput')
+
+        logging.info("entering login details")
+        self.send_keys('userNameInput', CONFIG.username + '@live.rhul.ac.uk')
+        self.send_keys('passwordInput', CONFIG.password)
+        self.click_element('submitButton')
+
+        self.load_page('https://generalssb-prod.ec.royalholloway.ac.uk/BannerExtensibility/customPage/page/RHUL_Attendance_Student')
+
+        logging.info("loaded attendance page")
+        time.sleep(60)
+        logging.info(lesson[1])
+
+        if "online" in lesson[1].lower():
+            self.driver.find_element(By.XPATH, '//*[@id="pbid-buttonFoundHappeningNowButtonsHere"]').click()
+            logging.info('signed in (Im Here)')
+
         else:
-            Log.log('No lesson has been found!')
+            self.driver.find_element(By.XPATH, '//*[@id="pbid-buttonFoundHappeningNowButtonsTwoInPerson"]').click()
+            logging.info('signed in (In Person)')
 
-    def wait_for_element(self, id):
-        Log.log(f"waiting for element '{id}'")
-        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, id)))
-
-
-    def mark_attendance(self, lesson):
-        try:
-            Log.log("creating web driver")
-            self.driver = init_webdriver()
-
-            Log.log("loding login page")
-            self.driver.get('https://lum-prod.ec.royalholloway.ac.uk/')
-            self.wait_for_element('userNameInput')
-
-            Log.log("entering login details")
-            # Login
-            self.driver.find_element(By.ID, 'userNameInput').send_keys(CONFIG.username + '@live.rhul.ac.uk')
-            self.driver.find_element(By.ID, 'passwordInput').send_keys(CONFIG.password)
-            self.driver.find_element(By.ID, 'submitButton').click()
-
-            Log.log("pressed login")
-            Log.log("loading attendance page")
-            # Load Attendance page
-            self.driver.get('https://generalssb-prod.ec.royalholloway.ac.uk/BannerExtensibility/customPage/page/RHUL_Attendance_Student')
-
-            Log.log("loaded attendance page")
-            # wait for load
-            try:
-                time.sleep(60)
-                Log.log(lesson[1])
-
-                if "online" in lesson[1].lower():
-                    self.driver.find_element(By.XPATH, '//*[@id="pbid-buttonFoundHappeningNowButtonsHere"]').click()
-                    Log.log('signed in (Im Here)')
-
-                else:
-                    self.driver.find_element(By.XPATH, '//*[@id="pbid-buttonFoundHappeningNowButtonsTwoInPerson"]').click()
-                    Log.log('signed in (In Person)')
+        utils.send_notification(lesson[1])
 
 
-                dn.monitor_attendance(lesson[1])
-                self.driver.quit()
-
-            except Exception as e:
-                self.driver.quit()
-                Log.log("ERROR **************************************")
-                Log.log(e)
-                Log.log("********************************************")
-                dn.error(str(e))
-        except Exception as e:
-            Log.log(e)
-            self.driver.quit()
 
     
     def is_in_class(self) -> object:
-        for lesson in self.current_day:
+        current_day = self.timetable[datetime.today().weekday()]
+        for lesson in current_day:
             start_time = lesson[0]
-            if self.time_passed > start_time and self.time_passed < start_time + 60:
+            time_diff = self.time_since_8()
+            if time_diff > start_time and time_diff < start_time + 60:
                 return lesson
             
-
-Attendance()
+if __name__ == "__main__":
+    with Attendance() as a:
+        a.start()

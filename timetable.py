@@ -1,74 +1,51 @@
 #!/usr/bin/python
 
-import CONFIG
-import json
-from findriver import init_webdriver
-from logs import Log
-from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
+import CONFIG, json, logging
+from selenium_controller import SeleniumController
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
-
-class Timetable():
+class Timetable(SeleniumController):
 
     timetable = []
 
-
     def __init__(self) -> None:
-        Log.log("starting timetable updater")
-        self.driver = init_webdriver()
-        self.get_timetable()
-
-    def wait_for_element(self, id):
-        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, id)))
+        SeleniumController.__init__(self)
+        
 
     def get_timetable(self) -> None:
-        Log.log("opening login page")
-        self.driver.get(CONFIG.url)
-        Log.log(CONFIG.url)
+        logging.info("opening login page")
+        
+        self.load_page(CONFIG.url)
 
 
-        # Wait for login page
         self.wait_for_element('tUserName')
        
-        # Login
-        Log.log("entering login details")
-        self.driver.find_element(By.ID, 'tUserName').send_keys(CONFIG.username)
-        self.driver.find_element(By.ID, 'tPassword').send_keys(CONFIG.password)
-        self.driver.find_element(By.ID, 'bLogin').click()
+        logging.info("entering login details")
+        self.send_keys('tUserName', CONFIG.username)
+        self.send_keys('tPassword', CONFIG.password)
+        self.click_element('bLogin')
 
-        # Wait for options page
         self.wait_for_element('LinkBtn_studentMyTimetable')
 
-        # Select 'My Timetable'
-        self.driver.find_element(By.ID, 'LinkBtn_studentMyTimetable').click()
+        self.click_element('LinkBtn_studentMyTimetable')
 
         # Wait for page to load
         self.wait_for_element('lbWeeks')
 
-        # Select current week
-        Log.log("selecting current week")
-        week_list = Select(self.driver.find_element(By.ID, 'lbWeeks'))
-        week_list.select_by_index(3)
+        logging.info("selecting current week")
+        self.select_list_by_index('lbWeeks', 3)
 
-        # Load timetable page
-        Log.log("loading timetable page")
-        self.driver.find_element(By.ID, 'bGetTimetable').click()
+        logging.info("loading timetable page")
+        self.click_element('bGetTimetable')
 
-        # Wait for page to load
+
         self.wait_for_element('form1')
 
-        # Get all timetable information
-        table = self.driver.find_element(By.XPATH, '/html/body/table[2]/tbody')
+        table = self.find_element_xpath('/html/body/table[2]/tbody')
         self.save_timetable(table)
-        self.driver.quit()
 
     def save_timetable(self, table) -> None:
-        Log.log("running save timetable")
+        logging.info("running save timetable")
         for i, tr in enumerate(table.find_elements(By.XPATH, './*')[1:]):
             offset = 0
             self.timetable.append([])
@@ -81,9 +58,11 @@ class Timetable():
                     offset = offset + 30
 
         with open('current_week.json', 'w') as f:
-            Log.log("saving timetable")
+            logging.info("saving timetable")
             json.dump(self.timetable, f)
 
 
 
-Timetable()
+if __name__ == "__main__":
+    with Timetable() as t:
+        t.get_timetable()
