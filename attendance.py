@@ -32,7 +32,6 @@ class Attendance(SeleniumController):
 
     def mark_attendance(self, lesson) -> None:
         logging.info("creating web driver")
-        self.driver = utils.init_webdriver()
 
         logging.info("loding login page")
         self.load_page('https://lum-prod.ec.royalholloway.ac.uk/')

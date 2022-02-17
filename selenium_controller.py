@@ -16,6 +16,7 @@ class SeleniumController():
         return self
 
     def __exit__(self, type, value, traceback):
+        self.driver.close()
         self.driver.quit()
     
     @utils.driver_time("looking for element", "found element after")
