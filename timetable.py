@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import CONFIG, json, logging
+import CONFIG, json, logging, utils
 from selenium_controller import SeleniumController
 from selenium.webdriver.common.by import By
 
@@ -61,8 +61,12 @@ class Timetable(SeleniumController):
             logging.info("saving timetable")
             json.dump(self.timetable, f)
 
+        utils.send_timetable(self.timetable)
+
 
 
 if __name__ == "__main__":
     with Timetable() as t:
         t.get_timetable()
+
+

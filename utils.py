@@ -2,6 +2,7 @@
 
 import time
 import logging
+import CONFIG
 from discord_webhook import DiscordWebhook, DiscordEmbed
 from shutil import which
 from selenium import webdriver
@@ -21,7 +22,7 @@ def init_logging():
 def init_webdriver():
     """Simple Function to initialize and configure Webdriver"""
     if FIREFOXPATH != None:
-        logging.info(FIREFOXPATH)#cm
+        logging.info(FIREFOXPATH)
         from selenium.webdriver.firefox.options import Options
 
         options = Options()
@@ -30,7 +31,7 @@ def init_webdriver():
         return webdriver.Firefox(options=options, log_path="geckodriver.log")
 
     elif CHROMEPATH != None:
-        logging.info(CHROMEPATH)#cm
+        logging.info(CHROMEPATH)
         from selenium.webdriver.chrome.options import Options
 
         options = Options()
@@ -41,23 +42,27 @@ def init_webdriver():
 
 
 def send_notification(lesson):
-    webhook = DiscordWebhook(url='https://discord.com/api/webhooks/940240657413468230/eLhWgAvnVu0mOdwmp79XFumlChQT8HrrADQtU8InnXR9WveXtvulKdtyYm-MUCnrI8GJ')
+    webhook = DiscordWebhook(url=CONFIG.webhook)
     embed = DiscordEmbed(title='✅ Lesson attended', color='339441')
     embed.set_timestamp()
     embed.add_embed_field(name="Lesson", value=lesson, inline=False)
-
-
     webhook.add_embed(embed)
+    webhook.execute()
 
+days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+def send_timetable(timetable):
+    webhook = DiscordWebhook(url=CONFIG.webhook)
+    embed = DiscordEmbed(title='', color='339441')
+    for k, v in enumerate(timetable):
+        embed.add_embed_field(name=days[k], value=f"{len(v)}", inline=False)
+    webhook.add_embed(embed)
     webhook.execute()
 
 def send_error(error):
-
-    webhook = DiscordWebhook(url='https://discord.com/api/webhooks/940240657413468230/eLhWgAvnVu0mOdwmp79XFumlChQT8HrrADQtU8InnXR9WveXtvulKdtyYm-MUCnrI8GJ')
+    webhook = DiscordWebhook(url=CONFIG.webhook)
     embed = DiscordEmbed(title='An error occured', color='ff0000')
     embed.add_embed_field(name='Error', value=error)
     webhook.add_embed(embed)
-
     webhook.execute()
 
 
