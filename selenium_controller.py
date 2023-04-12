@@ -22,7 +22,12 @@ class SeleniumController():
     @utils.driver_time("looking for element", "found element after")
     def wait_for_element(self, id, length=10) -> None:
         WebDriverWait(self.driver, length).until(EC.presence_of_element_located((By.ID, id)))
-   
+  
+    def wait_for_element_list(self, element_list, length=10):
+        WebDriverWait(self.driver, length).until(
+            lambda driver: driver.find_elements(By.ID,"a") or driver.find_elements(By.ID,"b"))
+        pass
+
     @utils.driver_time("sending keys for element", "sent keys after")
     def send_keys(self, id, keys) -> None:
         self.driver.find_element(By.ID, id).send_keys(keys)
